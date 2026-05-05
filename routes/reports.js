@@ -84,4 +84,50 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+
+router.put('/:id', authMiddleware, async (req, res) => {
+  try {
+    const reportRef = db.collection('reports').doc(req.params.id);
+    const report = await reportRef.get();
+
+    if (!report.exists) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
+    if (report.data().submittedBy !== req.user.uid) {
+      return res.status(403).json({ error: 'You can only edit your own reports' });
+    }
+
+    await reportRef.update({
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    });
+
+    res.json({ message: 'Report updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const reportRef = db.collection('reports').doc(req.params.id);
+    const report = await reportRef.get();
+
+    if (!report.exists) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
+    if (report.data().submittedBy !== req.user.uid) {
+      return res.status(403).json({ error: 'You can only delete your own reports' });
+    }
+
+    await reportRef.delete();
+    res.json({ message: 'Report deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
