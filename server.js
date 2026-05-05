@@ -7,6 +7,7 @@ const reportRoutes = require('./routes/reports');
 const userRoutes = require('./routes/users');
 const ratingRoutes = require('./routes/ratings');
 const feedbackRoutes = require('./routes/feedback');
+const courseRoutes = require('./routes/courses');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/courses', courseRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
